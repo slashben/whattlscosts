@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-proxy
+spec:
+  selector:
+    matchLabels:
+      app: nginx-proxy
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-proxy
+    spec:
+      containers:
+      - name: nginx-proxy
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 8081
+        volumeMounts:
+        - mountPath: /etc/nginx # mount nginx-conf volumn to /etc/nginx
+          readOnly: true
+          name: nginx-proxy-conf
+      volumes:
+      - name: nginx-proxy-conf
+        configMap:
+          name: nginx-proxy-conf # place ConfigMap `nginx-conf` on /etc/nginx
+          items:
+            - key: nginx.conf
+              path: nginx.conf
+            - key: tls.crt
+              path: ssl/tls.crt
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-uut
+spec:
+  type: NodePort
+  ports:
+  - port: 8081
+  selector:
+    app: nginx-proxy
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-proxy-conf
+data:
+  nginx.conf: |
+        worker_rlimit_nofile 8192;
+        events {
+          worker_connections  4096;
+        }
+        http {
+            server {
+                listen      8081;
+                listen [::]:8081;
+                location / {
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_pass https://server-uut:8080;
+                    proxy_ssl_trusted_certificate /etc/nginx/ssl/tls.crt;
+                    proxy_ssl_verify       on;
+                }
+            }
+        }
+  tls.crt: |
+        -----BEGIN CERTIFICATE-----
+        MIIDgTCCAmmgAwIBAgIJAPep18KylXBfMA0GCSqGSIb3DQEBCwUAMFcxCzAJBgNV
+        BAYTAlhYMRUwEwYDVQQHDAxEZWZhdWx0IENpdHkxHDAaBgNVBAoME0RlZmF1bHQg
+        Q29tcGFueSBMdGQxEzARBgNVBAMMCnNlcnZlci11dXQwHhcNMjAwNzIxMTMwMDI3
+        WhcNMjEwNzIxMTMwMDI3WjBXMQswCQYDVQQGEwJYWDEVMBMGA1UEBwwMRGVmYXVs
+        dCBDaXR5MRwwGgYDVQQKDBNEZWZhdWx0IENvbXBhbnkgTHRkMRMwEQYDVQQDDApz
+        ZXJ2ZXItdXV0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw83KO92y
+        cCD4aTPEz/4AkX+omyUEGkFheAkKPHPqqvLAClAe7fdFRcAyAjFy0DiR0lSc3bMj
+        w3Swx9Fz+PSzAF9CkWL0EAaI5y2K4Qy0W6pdgXTd4Ea2m0AdUPiGHvEFr96zxkYt
+        GtMffvK8DNUn3hIQS8dfJgr+JmTLXUg0OwX5MYl613xYXha63tIDMrZo/akrFrwR
+        citHCPTHhJL9iOG5RoE2dJIk89IvN7XL/67M1li59SGcFL1a2ceLw7RsQ63Csi99
+        32rx1tp0MWDMGAzeu8ZVBc73d9sJVxqIYp6fHWuo2HQ3EYNd94+OfK0Ra4VAIuUA
+        6YA0bK8nKM4YDwIDAQABo1AwTjAdBgNVHQ4EFgQU8uSx3yCSpdqhLeDG7P+F+4c1
+        fhIwHwYDVR0jBBgwFoAU8uSx3yCSpdqhLeDG7P+F+4c1fhIwDAYDVR0TBAUwAwEB
+        /zANBgkqhkiG9w0BAQsFAAOCAQEAsOIoMYAZSxvoBo4MYq2GmokTeoKERkqHfLmI
+        Mnn2XVoWu5Pc24lO3aj1lFgINzdzsxp2TX7KACJ2H6KCnKXXmPgWErdkJMY+NFWE
+        xC0mzHtoIohnv4ZrYdzGYmmbnvbVuuYL4Tg+o5O9f3b2BOwdOxH2lKCljxVUrcAz
+        OvbslSwEkTYSgBjnfl0xax2UFcM5k4I/IbiPXYyW8HWUz6CCmrCZIVjb31gz39su
+        eyQg5bTB/nPhMFoN7rY2YWBAcoRCuXdCxQDJff8GCxtdyKCSxq7DbqlQPjvPT1jp
+        aS28h4AwD8rwXcbhfxNWueR2gdWMazRA0Ui9JXKTuxfaduWGwA==
+        -----END CERTIFICATE-----
+

@@ -1,0 +1,131 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-server-conf
+data:
+  nginx.conf: |
+        worker_rlimit_nofile 8192;
+        events {
+          worker_connections  4096;
+        }
+        http {
+            server {
+                listen      8080 ssl;
+                listen [::]:8080 ssl;
+                root /www/data;
+                location / {
+                }
+                ssl_certificate     /etc/nginx/ssl/tls.crt;
+                ssl_certificate_key /etc/nginx/ssl/tls.key;
+                ssl_ciphers         EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH;
+                ssl_protocols       TLSv1.1 TLSv1.2;
+            }
+        }
+  tls.crt: |
+        -----BEGIN CERTIFICATE-----
+        MIIDgTCCAmmgAwIBAgIJAPep18KylXBfMA0GCSqGSIb3DQEBCwUAMFcxCzAJBgNV
+        BAYTAlhYMRUwEwYDVQQHDAxEZWZhdWx0IENpdHkxHDAaBgNVBAoME0RlZmF1bHQg
+        Q29tcGFueSBMdGQxEzARBgNVBAMMCnNlcnZlci11dXQwHhcNMjAwNzIxMTMwMDI3
+        WhcNMjEwNzIxMTMwMDI3WjBXMQswCQYDVQQGEwJYWDEVMBMGA1UEBwwMRGVmYXVs
+        dCBDaXR5MRwwGgYDVQQKDBNEZWZhdWx0IENvbXBhbnkgTHRkMRMwEQYDVQQDDApz
+        ZXJ2ZXItdXV0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw83KO92y
+        cCD4aTPEz/4AkX+omyUEGkFheAkKPHPqqvLAClAe7fdFRcAyAjFy0DiR0lSc3bMj
+        w3Swx9Fz+PSzAF9CkWL0EAaI5y2K4Qy0W6pdgXTd4Ea2m0AdUPiGHvEFr96zxkYt
+        GtMffvK8DNUn3hIQS8dfJgr+JmTLXUg0OwX5MYl613xYXha63tIDMrZo/akrFrwR
+        citHCPTHhJL9iOG5RoE2dJIk89IvN7XL/67M1li59SGcFL1a2ceLw7RsQ63Csi99
+        32rx1tp0MWDMGAzeu8ZVBc73d9sJVxqIYp6fHWuo2HQ3EYNd94+OfK0Ra4VAIuUA
+        6YA0bK8nKM4YDwIDAQABo1AwTjAdBgNVHQ4EFgQU8uSx3yCSpdqhLeDG7P+F+4c1
+        fhIwHwYDVR0jBBgwFoAU8uSx3yCSpdqhLeDG7P+F+4c1fhIwDAYDVR0TBAUwAwEB
+        /zANBgkqhkiG9w0BAQsFAAOCAQEAsOIoMYAZSxvoBo4MYq2GmokTeoKERkqHfLmI
+        Mnn2XVoWu5Pc24lO3aj1lFgINzdzsxp2TX7KACJ2H6KCnKXXmPgWErdkJMY+NFWE
+        xC0mzHtoIohnv4ZrYdzGYmmbnvbVuuYL4Tg+o5O9f3b2BOwdOxH2lKCljxVUrcAz
+        OvbslSwEkTYSgBjnfl0xax2UFcM5k4I/IbiPXYyW8HWUz6CCmrCZIVjb31gz39su
+        eyQg5bTB/nPhMFoN7rY2YWBAcoRCuXdCxQDJff8GCxtdyKCSxq7DbqlQPjvPT1jp
+        aS28h4AwD8rwXcbhfxNWueR2gdWMazRA0Ui9JXKTuxfaduWGwA==
+        -----END CERTIFICATE-----
+  tls.key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpAIBAAKCAQEAw83KO92ycCD4aTPEz/4AkX+omyUEGkFheAkKPHPqqvLAClAe
+        7fdFRcAyAjFy0DiR0lSc3bMjw3Swx9Fz+PSzAF9CkWL0EAaI5y2K4Qy0W6pdgXTd
+        4Ea2m0AdUPiGHvEFr96zxkYtGtMffvK8DNUn3hIQS8dfJgr+JmTLXUg0OwX5MYl6
+        13xYXha63tIDMrZo/akrFrwRcitHCPTHhJL9iOG5RoE2dJIk89IvN7XL/67M1li5
+        9SGcFL1a2ceLw7RsQ63Csi9932rx1tp0MWDMGAzeu8ZVBc73d9sJVxqIYp6fHWuo
+        2HQ3EYNd94+OfK0Ra4VAIuUA6YA0bK8nKM4YDwIDAQABAoIBAQCpaeUQ50D8w4or
+        fB9N1vem7E117xEdpnQu56NzqtfgESkXwzr/qnLFZwXd3+r3PfrtgUg4ikbnVo+e
+        VBuDzDUUnVd7c6K4Ou85Fq6TCesDZOSCnhtbcdONgGvdIyromqHRCV+CrjVYgFNA
+        A8WxVLyp5/cxmc85m0lK7usGSvLmHT6VFgfMoQROtjeSNLwjcI9a6DdL1T7F/LJn
+        xGWYncAVvC7k9yPDRNuWHhS5qzlZcDg8rV37ywug54BOMDl/il/hUuWEVo5vf9d5
+        91P9EnYtx6QRd6Ys7EIbKDGq+0FxLV7rhs3dQ/LeCBzKDoAtIUG3+Y3JfyHnhT2L
+        VVXBkCwBAoGBAP1y4+ZkKya0m0avKWW2EROEEx65xCeXvKCuknU/0iVyNHQYvXrK
+        9SMOzMnE1xjCefb/b7v49iscYvEUQ3XLu8fybSRiB/E5vy54iWwCSMyiiP3tEzxI
+        dvTicllzbxeehNQpye+roHWEi6y//oOqzbuR8bLhhNVL2NfSjIuCMzBDAoGBAMXG
+        Wuc4MHeoo+CAEpdPXpp6x6njjrEZJwb7p1FFUOnFNn7RIeNFvvaBE6ZaT3Hq9cRM
+        6pr7aBXBg0rm0FS94ISgMUYU8JD0MqqMMOWQSuihu5AUf2oOKdtBIv6u4UWDdLxk
+        b8RH6DKpTmW40NoCQ2K8/iTvQja1v3ccEpElRzJFAoGBAMr+G/5JOC519O+2F0f5
+        fM/OtqmjS7ISW+euKmtyRFPtloltz0TsDU6Y6fioiUaxbJIhoFJDYpbA05YXDrjo
+        BmxshHHhek8AW1lS/W3enoQXofUOzps3xt74B3IRfGbEdcqf9bbaFVhKYrxnweef
+        A8w5ZgZJjeRwLSse3aZXD7yVAoGAdFsPjisrsKqBx4nx5h1m/iGwKE5d2+l9YYla
+        1eCfCvng5tlpQ4n8IJCuG9fUF6RxdUz/VbEFeo9ADCghd0nCtqR8eMvHALD6wgX6
+        moS63YSRkeHNWHr+uyTmTspadIgzfMbmTqczf+LF4ejKzwg31vZz2wz8eq2Q+KWG
+        cuhoq7UCgYBSUqJfXw5x/J+awsOqH5cmXi6kn9r5WdSCUE2VHZ4R4Rc1fnIeA8lX
+        XMQVsq6aB8RHW2+DKz4KBjRZZfTaw+hZ1BToQpGw0sZeduOtOrI7uxtP1rBdfWD8
+        nFcFhWscE3T09/BmjXm4A0JirapA+M4jkNwVS2gLSVlyJviLxXLyeA==
+        -----END RSA PRIVATE KEY-----
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-server
+spec:
+  selector:
+    matchLabels:
+      app: nginx-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-server
+    spec:
+      initContainers:
+      - name: init-files
+        image: busybox
+        command: ["/bin/sh","-c"]
+        args: [" wget https://cyberarmor-network-tests-files.s3.eu-central-1.amazonaws.com/random-1b.txt -P /www/data; wget https://cyberarmor-network-tests-files.s3.eu-central-1.amazonaws.com/random-1kb.txt -P /www/data; wget https://cyberarmor-network-tests-files.s3.eu-central-1.amazonaws.com/random-1mb.txt -P /www/data; wget https://cyberarmor-network-tests-files.s3.eu-central-1.amazonaws.com/random-10mb.txt -P /www/data; wget https://cyberarmor-network-tests-files.s3.eu-central-1.amazonaws.com/random-100mb.txt -P /www/data "]
+        volumeMounts:
+        - mountPath: /www/data
+          name: files-volume
+      containers:
+      - name: nginx-server
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /etc/nginx # mount nginx-conf volumn to /etc/nginx
+          readOnly: true
+          name: nginx-server-conf
+        - mountPath: /www/data
+          name: files-volume
+      volumes:
+      - name: nginx-server-conf
+        configMap:
+          name: nginx-server-conf # place ConfigMap `nginx-conf` on /etc/nginx
+          items:
+            - key: nginx.conf
+              path: nginx.conf
+            - key: tls.key
+              path: ssl/tls.key
+            - key: tls.crt
+              path: ssl/tls.crt
+      - name: files-volume # place file for download on /www/data
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-uut
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+  selector:
+    app: nginx-server
