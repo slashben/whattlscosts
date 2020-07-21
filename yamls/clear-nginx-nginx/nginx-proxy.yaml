@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-proxy
+spec:
+  selector:
+    matchLabels:
+      app: nginx-proxy
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-proxy
+    spec:
+      containers:
+      - name: nginx-proxy
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 8081
+        volumeMounts:
+        - mountPath: /etc/nginx # mount nginx-conf volumn to /etc/nginx
+          readOnly: true
+          name: nginx-proxy-conf
+      volumes:
+      - name: nginx-proxy-conf
+        configMap:
+          name: nginx-proxy-conf # place ConfigMap `nginx-conf` on /etc/nginx
+          items:
+            - key: nginx.conf
+              path: nginx.conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-uut
+spec:
+  type: NodePort
+  ports:
+  - port: 8081
+  selector:
+    app: nginx-proxy
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-proxy-conf
+data:
+  nginx.conf: |
+        worker_rlimit_nofile 8192;
+        events {
+          worker_connections  4096;
+        }
+        http {
+            server {
+                listen      8081;
+                listen [::]:8081;
+                location / {
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_pass http://server-uut:8080;
+                }
+            }
+        }
