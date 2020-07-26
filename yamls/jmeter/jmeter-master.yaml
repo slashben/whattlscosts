@@ -66,6 +66,8 @@ spec:
           items:
             - key: small.jmx
               path: small.jmx
+            - key: small_medium.jmx
+              path: small_medium.jmx
             - key: medium.jmx
               path: medium.jmx
             - key: big.jmx
