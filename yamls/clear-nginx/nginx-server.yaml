@@ -64,10 +64,6 @@ spec:
           items:
             - key: nginx.conf
               path: nginx.conf
-            - key: tls.key
-              path: ssl/tls.key
-            - key: tls.crt
-              path: ssl/tls.crt
       - name: files-volume # place file for download on /www/data
         emptyDir: {}
 ---
