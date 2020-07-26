@@ -38,6 +38,12 @@ spec:
         - mountPath: /test # mount jmeter test volumn to /test
           readOnly: true
           name: jmeter-test-conf
+        - mountPath: /test # mount jmeter test volumn to /test
+          readOnly: true
+          name: jmeter-testfiles
+        - mountPath: /test # mount jmeter test volumn to /test
+          readOnly: true
+          name: java-certificate-keystore
         - mountPath: /tmp 
           name: logs
       volumes:

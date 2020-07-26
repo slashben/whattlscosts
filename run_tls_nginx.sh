@@ -11,7 +11,7 @@ NAMESPACE=tls-nginx-nginx
 kubectl delete namespace $NAMESPACE &> /dev/null
 kubectl create namespace $NAMESPACE || exit 1
 
-kubectl -n $NAMESPACE create configmap java-certificate-keystore --from-file=keyfile=$TESTER_CERTIFICATE || exit 1
+kubectl -n $NAMESPACE create configmap java-certificate-keystore --from-file=keyfile.jks=$TESTER_CERTIFICATE || exit 1
 kubectl -n $NAMESPACE create configmap jmeter-testfiles --from-file=small.jmx=$TESTER_FILE_SMALL --from-file=media.jmx=$TESTER_FILE_MEDIUM --from-file=big.jmx=$TESTER_FILE_BIG || exit 1
 kubectl -n $NAMESPACE apply -f $SERVER_YAML || exit 1
 kubectl -n $NAMESPACE apply -f $TESTER_YAML || exit 1
