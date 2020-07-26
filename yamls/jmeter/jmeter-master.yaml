@@ -34,16 +34,21 @@ spec:
         - containerPort: 60000
           name: rmi-local-port
           protocol: TCP
+        resources:
+          limits:
+            cpu: "4"
+          requests:
+            cpu: "2"
         volumeMounts:
         - mountPath: /test # mount jmeter test volumn to /test
           readOnly: true
           name: jmeter-test-conf
-        - mountPath: /test # mount jmeter test volumn to /test
+        - mountPath: /test-extra # mount jmeter test volumn to /test
           readOnly: true
-          name: jmeter-testfiles
-        - mountPath: /test # mount jmeter test volumn to /test
-          readOnly: true
-          name: java-certificate-keystore
+          name: jmeter-test-conf-extra
+        #- mountPath: /keys # mount jmeter test volumn to /test
+        #  readOnly: true
+        #  name: java-certificate-keystore
         - mountPath: /tmp 
           name: logs
       volumes:
@@ -55,6 +60,18 @@ spec:
               path: J4K8sAgentNetTest.jmx
             - key: user.properties
               path: user.properties
+      - name: jmeter-test-conf-extra
+        configMap:
+          name: jmeter-test-conf-extra # place ConfigMap `jmeter-test-conf` on /test
+          items:
+            - key: small.jmx
+              path: small.jmx
+            - key: medium.jmx
+              path: medium.jmx
+            - key: big.jmx
+              path: big.jmx
+            - key: certificate.jks
+              path: certificate.jks
       - name: logs
         hostPath:
           path: /tmp/jmetertestlogs
@@ -342,4 +359,9 @@ data:
   user.properties: |
     jmeter.reportgenerator.apdex_tolerated_threshold=3000
     jmeter.reportgenerator.apdex_satisfied_threshold=1500
-    jmeter.reportgenerator.exporter.html.filters_only_sample_series=true    
+    javax.net.ssl.keyStore=/test/keyfile.jks
+    javax.net.ssl.keyStorePassword=a:123456
+    jmeter.reportgenerator.exporter.html.filters_only_sample_series=true   
+  system.properties: |
+    javax.net.ssl.keyStore=/test/certificate.jks
+    javax.net.ssl.keyStorePassword=a:123456
