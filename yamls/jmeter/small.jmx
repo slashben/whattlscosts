@@ -23,6 +23,11 @@
             <stringProp name="Argument.value">${__P(LoopCount,100)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="HttpMethod" elementType="Argument">
+            <stringProp name="Argument.name">HttpMethod</stringProp>
+            <stringProp name="Argument.value">${__P(HttpMethod,https)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -50,7 +55,7 @@
             </elementProp>
             <stringProp name="HTTPSampler.domain">server-uut</stringProp>
             <stringProp name="HTTPSampler.port">8080</stringProp>
-            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.protocol">${HttpMethod}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/random-1b.txt</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
