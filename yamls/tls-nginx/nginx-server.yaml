@@ -135,3 +135,16 @@ spec:
   - port: 8080
   selector:
     app: nginx-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-uut-external
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    nodePort: 30080
+    name: http
+  selector:
+    app: nginx-server

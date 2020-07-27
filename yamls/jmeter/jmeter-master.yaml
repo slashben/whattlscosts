@@ -24,8 +24,8 @@ spec:
         image: "kaarol/jmeter-master:latest"
         imagePullPolicy: Always
         env:
-        - name: SSL_DISABLED
-          value: "true"
+#        - name: SSL_DISABLED
+#          value: "true"
         - name: ONE_SHOT
           value: "false"
         - name: SLAVE_SVC_NAME
